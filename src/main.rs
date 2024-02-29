@@ -1,6 +1,3 @@
-use std::error::Error;
-use std::fmt::Debug;
-use std::path::Path;
 use csv::{Reader, ReaderBuilder};
 use druid::widget::{Button, Flex, Label};
 use druid::{AppLauncher, LocalizedString, PlatformError, Widget, WidgetExt, WindowDesc};
@@ -11,39 +8,41 @@ use plotters::drawing::IntoDrawingArea;
 use plotters::prelude::{BLACK, WHITE};
 use plotters::series::LineSeries;
 use root_io::RootFile;
+use std::error::Error;
+use std::fmt::Debug;
+use std::path::Path;
 
-use nom::number::complete::{be_f32, be_i32, be_u32};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-
+use nom::number::complete::{be_f32, be_i32, be_u32};
 
 #[tokio::main]
 async fn main() -> Result<(), PlatformError> {
-    // // Sanity check that program ran
-    // println!("Hello, world!");
-    //
-    // // Call your function and match the result
-    // match read_csv_data() {
-    //     Ok(()) => {
-    //         // Handle the successful case
-    //         println!("Read CSV Data function executed successfully!");
-    //     }
-    //     Err(err) => {
-    //         // Handle the error case
-    //         eprintln!("Error: {}", err);
-    //     }
-    // }
-    //
-    // // Call your function and match the result
-    // match read_csv_file() {
-    //     Ok(()) => {
-    //         // Handle the successful case
-    //         println!("Read CSV file function executed successfully!");
-    //     }
-    //     Err(err) => {
-    //         // Handle the error case
-    //         eprintln!("Error: {}", err);
-    //     }
-    // }
+    // Sanity check that program ran
+    println!("Hello, world!");
+
+    // Call your function and match the result
+    match read_csv_data() {
+        Ok(()) => {
+            // Handle the successful case
+            println!("Read CSV Data function executed successfully!");
+        }
+        Err(err) => {
+            // Handle the error case
+            eprintln!("Error: {}", err);
+        }
+    }
+
+    // Call your function and match the result
+    match read_csv_file() {
+        Ok(()) => {
+            // Handle the successful case
+            println!("Read CSV file function executed successfully!");
+        }
+        Err(err) => {
+            // Handle the error case
+            eprintln!("Error: {}", err);
+        }
+    }
 
     // Call your function and match the result
     match root_file_parser().await {
@@ -58,28 +57,28 @@ async fn main() -> Result<(), PlatformError> {
     }
 
     // // Call your function and match the result
-    // match plotters() {
-    //     Ok(()) => {
-    //         // Handle the successful case
-    //         println!("Plotters function executed successfully!");
-    //     }
-    //     Err(err) => {
-    //         // Handle the error case
-    //         eprintln!("Error: {}", err);
-    //     }
-    // }
-    //
-    // // Call your function and match the result
-    // match plotpy() {
-    //     Ok(()) => {
-    //         // Handle the successful case
-    //         println!("Plotpy function executed successfully!");
-    //     }
-    //     Err(err) => {
-    //         // Handle the error case
-    //         eprintln!("Error: {}", err);
-    //     }
-    // }
+    match plotters() {
+        Ok(()) => {
+            // Handle the successful case
+            println!("Plotters function executed successfully!");
+        }
+        Err(err) => {
+            // Handle the error case
+            eprintln!("Error: {}", err);
+        }
+    }
+
+    // Call your function and match the result
+    match plotpy() {
+        Ok(()) => {
+            // Handle the successful case
+            println!("Plotpy function executed successfully!");
+        }
+        Err(err) => {
+            // Handle the error case
+            eprintln!("Error: {}", err);
+        }
+    }
 
     let main_window = WindowDesc::new(ui_builder());
     let data = 0_u32;
@@ -119,8 +118,7 @@ fn read_csv_file() -> Result<(), Box<dyn Error>> {
 }
 
 fn plotters() -> Result<(), Box<dyn Error>> {
-    let drawing_area = BitMapBackend::new("src/1.0.png", (1024, 768))
-        .into_drawing_area();
+    let drawing_area = BitMapBackend::new("src/1.0.png", (1024, 768)).into_drawing_area();
 
     drawing_area.fill(&WHITE).unwrap();
 
@@ -128,9 +126,9 @@ fn plotters() -> Result<(), Box<dyn Error>> {
         .build_cartesian_2d(0..100, 0..100)
         .unwrap();
 
-    chart.draw_series(
-        LineSeries::new((0..100).map(|x| (x, 100 - x)), &BLACK),
-    ).unwrap();
+    chart
+        .draw_series(LineSeries::new((0..100).map(|x| (x, 100 - x)), &BLACK))
+        .unwrap();
 
     Ok(())
 }
@@ -176,15 +174,16 @@ fn ui_builder() -> impl Widget<u32> {
 
 async fn root_file_parser() -> Result<(), Box<dyn Error>> {
     // let working_file_items = RootFile::new(Path::new("./src/lem23_his_0001.root")).await.unwrap();
-    //let working_file_items = RootFile::new(Path::new("./src/simple.root")).await.unwrap();
-    let psi_file_items = RootFile::new(Path::new("./src/lem23_his_0001.root")).await.unwrap();
+    // let working_file_items = RootFile::new(Path::new("./src/simple.root")).await.unwrap();
+    let psi_file_items = RootFile::new(Path::new("./src/lem23_his_0001.root"))
+        .await
+        .unwrap();
 
-    //psi_file_items.1
-
-    //let tree = working_file_items.items()[0].as_tree().await.unwrap();
+    // let tree = working_file_items.items()[0].as_tree().await.unwrap();
     let tree_psi = psi_file_items.items()[0].as_tree().await.unwrap();
 
-    //let tree_name = &tree.branch_by_name("one").unwrap().name;
+    //
+    // //let tree_name = &tree.branch_by_name("one").unwrap().name;
     let tree_name_psi = &tree_psi.branch_by_name("one").unwrap().name;
 
     Ok(())

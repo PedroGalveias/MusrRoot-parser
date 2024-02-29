@@ -17,9 +17,11 @@
       <sourceFolder url="file://$MODULE_DIR$/root-io/benches" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/root-io/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/root-io/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/root-ls/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/alice-rs/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/root-io/target" />
+      <excludeFolder url="file://$MODULE_DIR$/root-ls/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
