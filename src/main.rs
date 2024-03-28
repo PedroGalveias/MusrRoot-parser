@@ -1,190 +1,210 @@
-use csv::{Reader, ReaderBuilder};
-use druid::widget::{Button, Flex, Label};
-use druid::{AppLauncher, LocalizedString, PlatformError, Widget, WidgetExt, WindowDesc};
-use plotpy::{generate3d, Plot, Surface};
-use plotters::backend::BitMapBackend;
-use plotters::chart::ChartBuilder;
-use plotters::drawing::IntoDrawingArea;
-use plotters::prelude::{BLACK, WHITE};
-use plotters::series::LineSeries;
-use root_io::RootFile;
+use druid::{PlatformError, WidgetExt};
 use std::error::Error;
 use std::fmt::Debug;
-use std::path::Path;
-
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use nom::number::complete::{be_f32, be_i32, be_u32};
+use std::fs::File;
+use std::io::Read;
+use std::mem::size_of;
 
 #[tokio::main]
 async fn main() -> Result<(), PlatformError> {
-    // Sanity check that program ran
-    println!("Hello, world!");
-
     // Call your function and match the result
-    match read_csv_data() {
+    match musr_root_file_parser() {
         Ok(()) => {
             // Handle the successful case
-            println!("Read CSV Data function executed successfully!");
+            println!("Musr Root File Parser function executed successfully!")
         }
         Err(err) => {
             // Handle the error case
-            eprintln!("Error: {}", err);
+            eprintln!("Error: {}", err)
         }
     }
-
-    // Call your function and match the result
-    match read_csv_file() {
-        Ok(()) => {
-            // Handle the successful case
-            println!("Read CSV file function executed successfully!");
-        }
-        Err(err) => {
-            // Handle the error case
-            eprintln!("Error: {}", err);
-        }
-    }
-
-    // Call your function and match the result
-    match root_file_parser().await {
-        Ok(()) => {
-            // Handle the successful case
-            println!("root file parser function executed successfully!");
-        }
-        Err(err) => {
-            // Handle the error case
-            eprintln!("Error: {}", err);
-        }
-    }
-
-    // // Call your function and match the result
-    match plotters() {
-        Ok(()) => {
-            // Handle the successful case
-            println!("Plotters function executed successfully!");
-        }
-        Err(err) => {
-            // Handle the error case
-            eprintln!("Error: {}", err);
-        }
-    }
-
-    // Call your function and match the result
-    match plotpy() {
-        Ok(()) => {
-            // Handle the successful case
-            println!("Plotpy function executed successfully!");
-        }
-        Err(err) => {
-            // Handle the error case
-            eprintln!("Error: {}", err);
-        }
-    }
-
-    let main_window = WindowDesc::new(ui_builder());
-    let data = 0_u32;
-    AppLauncher::with_window(main_window)
-        .log_to_console()
-        .launch(data)
+    Ok(())
+}
+#[derive(Debug)]
+struct MusrRootFile {
+    histos: Histos,
 }
 
-// Reads static csv data
-fn read_csv_data() -> Result<(), Box<dyn Error>> {
-    let data = "\
-city;country;pop
-Boston;United States;4628910
-";
+#[derive(Debug)]
+struct Histos {
+    decay_ana_module: DecayAnaModule,
+    sc_ana_module: SCAnaModule,
+}
 
-    let mut rdr = ReaderBuilder::new()
-        .delimiter(b';')
-        .from_reader(data.as_bytes());
+#[derive(Debug)]
+struct DecayAnaModule {
+    h_decay: Vec<HDecay>,
+}
 
-    if let Some(result) = rdr.records().next() {
-        let record = result?;
-        assert_eq!(record, vec!["Boston", "United States", "4628910"]);
-        Ok(())
+#[derive(Debug)]
+struct HDecay {
+    // Define fields specific to hDecay
+    // For example:
+    field1: f64,
+    field2: f64,
+    field3: f64,
+}
+
+#[derive(Debug)]
+struct SCAnaModule {
+    // Define fields specific to SCAnaModule
+    h_sample_temperature: f64,
+    h_sample_magnetic_field: f64,
+}
+
+#[derive(Debug)]
+struct RunHeader {}
+
+#[derive(Debug)]
+struct RunInfo {}
+
+#[derive(Debug)]
+struct DetectorInfo {
+    detectors: Vec<Detector>,
+}
+
+#[derive(Debug)]
+struct Detector {
+    name: String,
+    histo_number: i64,
+    histo_length: i64,
+    time_zero_bin: f64,
+    first_good_bin: i64,
+    last_good_bin: i64,
+}
+
+#[derive(Debug)]
+struct SampleEnvironmentInfo {}
+
+#[derive(Debug)]
+struct MagneticFieldEnvironmentInfo {}
+
+#[derive(Debug)]
+struct BeamlineInfo {}
+
+
+impl MusrRootFile {
+    // Method to parse binary data into MusrRoot struct
+    fn parse(bytes: &[u8]) -> Option<MusrRootFile> {
+        let histos = Histos::parse(bytes)?;
+        Some(MusrRootFile { histos })
+    }
+}
+
+impl Histos {
+    // Method to parse binary data into Histos struct
+    fn parse(bytes: &[u8]) -> Option<Histos> {
+        let decay_ana_module = DecayAnaModule::parse(bytes)?;
+        let sc_ana_module = SCAnaModule::parse(bytes)?;
+        Some(Histos { decay_ana_module, sc_ana_module })
+    }
+}
+
+impl HDecay {
+    // Method to parse binary data into HDecay struct
+    fn parse(bytes: &[u8]) -> Option<HDecay> {
+        // Check if there are enough bytes to parse the HDecay struct
+        if bytes.len() < size_of::<HDecay>() {
+            return None;
+        }
+
+        // Extract the fields from the binary data
+        // Example: Assuming field1, field2, field3 are all f64 values
+        let field1_bytes = &bytes[0..8];
+        let field2_bytes = &bytes[8..16];
+        let field3_bytes = &bytes[16..24];
+
+        // Convert the bytes into f64 values using from_le_bytes for little-endian bytes
+        let field1 = f64::from_le_bytes(field1_bytes.try_into().unwrap());
+        let field2 = f64::from_le_bytes(field2_bytes.try_into().unwrap());
+        let field3 = f64::from_le_bytes(field3_bytes.try_into().unwrap());
+
+        // Create and return the HDecay struct
+        Some(HDecay { field1, field2, field3 })
+    }
+}
+
+impl DecayAnaModule {
+    // Method to parse binary data into DecayAnaModule struct
+    fn parse(bytes: &[u8]) -> Option<DecayAnaModule> {
+        // Calculate the size of each HDecay struct in bytes
+        let h_decay_size = size_of::<HDecay>();
+
+        // Check if there are enough bytes to parse at least one HDecay struct
+        if bytes.len() < h_decay_size {
+            return None;
+        }
+
+        // Calculate the number of HDecay structs in the binary data
+        let num_h_decays = bytes.len() / h_decay_size;
+
+        // Create a vector to store the parsed HDecay structs
+        let mut h_decays = Vec::with_capacity(num_h_decays);
+
+        // Iterate over the binary data to parse each HDecay struct
+        for i in 0..num_h_decays {
+            // Calculate the start and end positions of the current HDecay struct in the byte slice
+            let start = i * h_decay_size;
+            let end = start + h_decay_size;
+
+            // Extract the bytes for the current HDecay struct
+            let h_decay_bytes = &bytes[start..end];
+
+            // Parse the HDecay struct from the bytes
+            if let Some(h_decay) = HDecay::parse(h_decay_bytes) {
+                h_decays.push(h_decay);
+            } else {
+                // Failed to parse HDecay struct, return None
+                return None;
+            }
+        }
+
+        // Return the parsed DecayAnaModule struct
+        Some(DecayAnaModule { h_decay: h_decays })
+    }
+}
+
+impl SCAnaModule {
+    // Method to parse binary data into SCAnaModule struct
+    fn parse(bytes: &[u8]) -> Option<SCAnaModule> {
+        // Implement parsing logic for SCAnaModule
+        // Example: Assuming h_sample_temperature and h_sample_magnetic_field are both f64 values
+
+        // Check if there are enough bytes to parse the SCAnaModule struct
+        let struct_size = size_of::<SCAnaModule>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        // Extract the fields from the binary data
+        let temperature_bytes = &bytes[0..8];
+        let magnetic_field_bytes = &bytes[8..16];
+
+        // Convert the bytes into f64 values using from_le_bytes for little-endian bytes
+        let temperature = f64::from_le_bytes(temperature_bytes.try_into().unwrap());
+        let magnetic_field = f64::from_le_bytes(magnetic_field_bytes.try_into().unwrap());
+
+        // Create and return the SCAnaModule struct
+        Some(SCAnaModule { h_sample_temperature: temperature, h_sample_magnetic_field: magnetic_field })
+    }
+}
+
+impl RunInfo {}
+
+fn musr_root_file_parser() -> Result<(), Box<dyn Error>> {
+    // Open the binary file
+    let mut file = File::open("./src/lem23_his_0001.root")?;
+
+    // Read the entire contents of the file into a buffer
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
+
+    // Parse the binary data
+    if let Some(data) = MusrRootFile::parse(&buffer) {
+        println!("Parsed data: {:?}", data);
     } else {
-        Err(From::from("expected at least one record but got none"))
+        eprintln!("Failed to parse MUSR Root File");
     }
-}
-
-// Reads CSV file from a given static path
-fn read_csv_file() -> Result<(), Box<dyn Error>> {
-    let mut rdr = Reader::from_path(Path::new("./src/data.csv"))?;
-    for result in rdr.records() {
-        let record = result?;
-        println!("{:?}", record);
-    }
-    Ok(())
-}
-
-fn plotters() -> Result<(), Box<dyn Error>> {
-    let drawing_area = BitMapBackend::new("src/1.0.png", (1024, 768)).into_drawing_area();
-
-    drawing_area.fill(&WHITE).unwrap();
-
-    let mut chart = ChartBuilder::on(&drawing_area)
-        .build_cartesian_2d(0..100, 0..100)
-        .unwrap();
-
-    chart
-        .draw_series(LineSeries::new((0..100).map(|x| (x, 100 - x)), &BLACK))
-        .unwrap();
-
-    Ok(())
-}
-
-fn plotpy() -> Result<(), Box<dyn Error>> {
-    let mut surface = Surface::new();
-
-    surface
-        .set_with_wireframe(true)
-        .set_colormap_name("Pastel1")
-        .set_with_colorbar(true)
-        .set_colorbar_label("temperature")
-        .set_line_color("#1862ab")
-        .set_line_style(":")
-        .set_line_width(0.75);
-
-    // draw surface
-    let n = 9;
-    let (x, y, z) = generate3d(-2.0, 2.0, -2.0, 2.0, n, n, |x, y| x * x + y * y);
-
-    surface.draw(&x, &y, &z);
-
-    let mut plot = Plot::new();
-    plot.add(&surface);
-
-    // save figure
-    plot.save("./src/plotpy.svg")?;
-
-    Ok(())
-}
-
-fn ui_builder() -> impl Widget<u32> {
-    // The label text will be computed dynamically based on the current locale and count
-    let text =
-        LocalizedString::new("hello-counter").with_arg("count", |data: &u32, _env| (*data).into());
-    let label = Label::new(text).padding(5.0).center();
-    let button = Button::new("increment")
-        .on_click(|_ctx, data, _env| *data += 1)
-        .padding(5.0);
-
-    Flex::column().with_child(label).with_child(button)
-}
-
-async fn root_file_parser() -> Result<(), Box<dyn Error>> {
-    // let working_file_items = RootFile::new(Path::new("./src/lem23_his_0001.root")).await.unwrap();
-    // let working_file_items = RootFile::new(Path::new("./src/simple.root")).await.unwrap();
-    let psi_file_items = RootFile::new(Path::new("./src/lem23_his_0001.root"))
-        .await
-        .unwrap();
-
-    // let tree = working_file_items.items()[0].as_tree().await.unwrap();
-    let tree_psi = psi_file_items.items()[0].as_tree().await.unwrap();
-
-    //
-    // //let tree_name = &tree.branch_by_name("one").unwrap().name;
-    let tree_name_psi = &tree_psi.branch_by_name("one").unwrap().name;
 
     Ok(())
 }
