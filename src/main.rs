@@ -1,11 +1,10 @@
-mod musr_root_file_parser;
-mod models;
 mod error;
+mod models;
+mod musr_root_file_parser;
 
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
-
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Open the binary file

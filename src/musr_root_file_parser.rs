@@ -12,16 +12,18 @@ pub(crate) fn run(input: &[u8]) -> Result<MusrRootFile, Box<dyn Error>> {
 }
 
 mod musr_root_file_parser {
+    use crate::models::*;
     use nom::bytes::complete::{tag, take_until};
     use nom::combinator::map_res;
-    use nom::IResult;
     use nom::multi::{count, many0};
     use nom::number::complete::{be_f64, be_i64};
     use nom::sequence::terminated;
-    use crate::models::*;
+    use nom::IResult;
 
     // Entry point for parsing the MusrRootFile
-    pub(crate) fn parse_musr_root_file_bytes(input: &[u8]) -> Result<MusrRootFile, nom::error::Error<&[u8]>> {
+    pub(crate) fn parse_musr_root_file_bytes(
+        input: &[u8],
+    ) -> Result<MusrRootFile, nom::error::Error<&[u8]>> {
         match parse_musr_root_file(input) {
             Ok((_, musr_root_file)) => Ok(musr_root_file),
             Err(_err) => Err(nom::error::Error::new(input, nom::error::ErrorKind::Fail)),
@@ -32,15 +34,8 @@ mod musr_root_file_parser {
         let (input, histos) = parse_histos(input)?;
         let (input, run_header) = parse_run_header(input)?;
 
-        Ok((
-            input,
-            MusrRootFile {
-                histos,
-                run_header,
-            },
-        ))
+        Ok((input, MusrRootFile { histos, run_header }))
     }
-
 
     fn parse_string(input: &[u8]) -> IResult<&[u8], String> {
         map_res(take_until("\0"), |v: &[u8]| {
@@ -58,13 +53,13 @@ mod musr_root_file_parser {
 
         Ok((
             input,
-            Detector{
+            Detector {
                 name,
                 histo_number,
                 histo_length,
                 time_zero_bin,
                 first_good_bin,
-                last_good_bin
+                last_good_bin,
             },
         ))
     }
@@ -125,19 +120,14 @@ mod musr_root_file_parser {
                 no_of_histos,
                 // TODO: time_resolution. Implement TMusrRunPhysicalQuantity
                 // TODO: redGreen_offsets. Implement TMusrRunPhysicalQuantity
-            }
+            },
         ))
     }
 
     fn parse_detector_info(input: &[u8]) -> IResult<&[u8], DetectorInfo> {
         let (input, detectors) = parse_detector_vector(input)?;
 
-        Ok((
-            input,
-            DetectorInfo {
-                detectors
-            },
-        ))
+        Ok((input, DetectorInfo { detectors }))
     }
 
     fn parse_histos(input: &[u8]) -> IResult<&[u8], Histos> {
@@ -156,10 +146,7 @@ mod musr_root_file_parser {
     fn parse_decay_ana_module(input: &[u8]) -> IResult<&[u8], DecayAnaModule> {
         let (input, h_decay) = count(parse_h_decay, 3)(input)?;
         // TODO: Add parsing for other fields of DecayAnaModule
-        Ok((
-            input,
-            DecayAnaModule { h_decay }
-        ))
+        Ok((input, DecayAnaModule { h_decay }))
     }
 
     fn parse_h_decay(input: &[u8]) -> IResult<&[u8], HDecay> {
@@ -178,8 +165,8 @@ mod musr_root_file_parser {
                 histo_length,
                 time_zero_bin,
                 first_good_bin,
-                last_good_bin
-            }
+                last_good_bin,
+            },
         ))
     }
 
@@ -200,7 +187,8 @@ mod musr_root_file_parser {
         let (input, run_info) = parse_run_info(input)?;
         let (input, detector_info) = parse_detector_info(input)?;
         let (input, sample_environment_info) = parse_sample_environment_info(input)?;
-        let (input, magnetic_field_environment_info) = parse_magnetic_field_environment_info(input)?;
+        let (input, magnetic_field_environment_info) =
+            parse_magnetic_field_environment_info(input)?;
         let (input, beamline_info) = parse_beamline_info(input)?;
 
         Ok((
@@ -210,8 +198,8 @@ mod musr_root_file_parser {
                 detector_info,
                 sample_environment_info,
                 magnetic_field_environment_info,
-                beamline_info
-            }
+                beamline_info,
+            },
         ))
     }
 
@@ -219,7 +207,9 @@ mod musr_root_file_parser {
         todo!()
     }
 
-    fn parse_magnetic_field_environment_info(input: &[u8]) -> IResult<&[u8], MagneticFieldEnvironmentInfo> {
+    fn parse_magnetic_field_environment_info(
+        input: &[u8],
+    ) -> IResult<&[u8], MagneticFieldEnvironmentInfo> {
         todo!()
     }
 

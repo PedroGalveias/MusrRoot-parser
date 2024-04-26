@@ -70,11 +70,10 @@ pub(crate) struct RunInfo {
     // sample_temperature: TMusrRunPhysicalQuantity,
     // TODO: Implement TMusrRunPhysicalQuantity
     // sample_magnetic_field: TMusrRunPhysicalQuantity,
-    pub(crate) no_of_histos: i64
-    // TODO: Implement TMusrRunPhysicalQuantity
-    // time_resolution: TMusrRunPhysicalQuantity,
-    // TODO: Implement TIntVector
-    // redGreen_offsets: TIntVector,
+    pub(crate) no_of_histos: i64, // TODO: Implement TMusrRunPhysicalQuantity
+                                  // time_resolution: TMusrRunPhysicalQuantity,
+                                  // TODO: Implement TIntVector
+                                  // redGreen_offsets: TIntVector,
 }
 
 #[derive(Debug)]
