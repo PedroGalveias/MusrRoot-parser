@@ -2,29 +2,25 @@ mod error;
 mod models;
 mod musr_root_file_parser;
 
-use std::error::Error;
+use crate::error::ParsingError;
+use crate::musr_root_file_parser::parse_musr_root_file;
 use std::fs::File;
-use std::io::Read;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Open the binary file
+fn main() -> Result<(), ParsingError> {
+    // Get the file path from command line arguments
+    // let args: Vec<String> = env::args().collect();
+    // if args.len() != 2 {
+    //     eprintln!("Usage: {} <path to binary file>", args[0]);
+    //     std::process::exit(1);
+    // }
+    // let file_path = &args[1];
     let mut file = File::open("./src/lem23_his_0001.root")?;
 
-    // Read the entire contents of the file into a buffer
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
+    // Parse the file
+    let musr_root_file = parse_musr_root_file("./src/lem23_his_0001.root")?;
 
-    // Parse a MUSR Root file (lemXX.root) to a MusrRootFile struct
-    match musr_root_file_parser::run(&buffer) {
-        Ok(parsed_file) => {
-            // Print the parsed MusrRootFile
-            println!("{:?}", parsed_file);
-            Ok(())
-        }
-        Err(err) => {
-            // Handle parsing error
-            eprintln!("Parsing error: {:?}", err);
-            Err(err.into())
-        }
-    }
+    // Do something with the parsed data
+    println!("{:?}", musr_root_file);
+
+    Ok(())
 }

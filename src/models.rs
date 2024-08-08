@@ -1,107 +1,397 @@
+use std::mem::size_of;
+
 #[derive(Debug)]
-pub(crate) struct MusrRootFile {
-    pub(crate) histos: Histos,
-    pub(crate) run_header: RunHeader,
+pub struct MusrRootFile {
+    pub histos: Histos,
+    pub run_header: RunHeader,
 }
 
 #[derive(Debug)]
-pub(crate) struct Histos {
-    pub(crate) decay_ana_module: DecayAnaModule,
-    pub(crate) sc_ana_module: SCAnaModule,
+pub struct Histos {
+    pub decay_ana_module: DecayAnaModule,
+    pub sc_ana_module: SCAnaModule,
 }
 
 #[derive(Debug)]
-pub(crate) struct DecayAnaModule {
-    pub(crate) h_decay: Vec<HDecay>,
+pub struct DecayAnaModule {
+    pub h_decay: Vec<HDecay>,
 }
 
 #[derive(Debug)]
-pub(crate) struct HDecay {
-    // Define fields specific to HDecay
-    pub(crate) name: String,
-    pub(crate) histo_number: i64,
-    pub(crate) histo_length: i64,
-    pub(crate) time_zero_bin: f64,
-    pub(crate) first_good_bin: i64,
-    pub(crate) last_good_bin: i64,
+pub struct HDecay {
+    pub field1: f64,
+    pub field2: f64,
+    pub field3: f64,
 }
 
 #[derive(Debug)]
-pub(crate) struct SCAnaModule {
-    // Define fields specific to SCAnaModule
-    // TODO: Implement TMusrRunPhysicalQuantity
-    pub(crate) h_sample_temperature: String,
-    // TODO: Implement TMusrRunPhysicalQuantity
-    pub(crate) h_sample_magnetic_field: String,
+pub struct SCAnaModule {
+    pub h_sample_temperature: f64,
+    pub h_sample_magnetic_field: f64,
 }
 
 #[derive(Debug)]
-pub(crate) struct RunHeader {
-    pub(crate) run_info: RunInfo,
-    pub(crate) detector_info: DetectorInfo,
-    pub(crate) sample_environment_info: SampleEnvironmentInfo,
-    pub(crate) magnetic_field_environment_info: MagneticFieldEnvironmentInfo,
-    pub(crate) beamline_info: BeamlineInfo,
+pub struct RunHeader {
+    pub run_info: RunInfo,
+    pub detector_info: DetectorInfo,
+    pub sample_environment_info: SampleEnvironmentInfo,
+    pub magnetic_field_environment_info: MagneticFieldEnvironmentInfo,
+    pub beamline_info: BeamlineInfo,
 }
 
 #[derive(Debug)]
-pub(crate) struct RunInfo {
-    pub(crate) version: String,
-    pub(crate) generic_validator_url: String,
-    pub(crate) specific_validator_url: String,
-    pub(crate) generator: String,
-    pub(crate) file_name: String,
-    pub(crate) run_title: String,
-    pub(crate) run_number: i64,
-    pub(crate) run_start_time: String,
-    pub(crate) run_stop_time: String,
-    // TODO: Implement TMusrRunPhysicalQuantity
-    // run_duration: TMusrRunPhysicalQuantity,
-    pub(crate) laboratory: String,
-    pub(crate) instrument: String,
-    // TODO: Implement TMusrRunPhysicalQuantity
-    // muon_beam_momentum: TMusrRunPhysicalQuantity,
-    pub(crate) muon_species: String,
-    pub(crate) muon_source: String,
-    pub(crate) setup: String,
-    pub(crate) comment: String,
-    pub(crate) sample_name: String,
-    // TODO: Implement TMusrRunPhysicalQuantity
-    // sample_temperature: TMusrRunPhysicalQuantity,
-    // TODO: Implement TMusrRunPhysicalQuantity
-    // sample_magnetic_field: TMusrRunPhysicalQuantity,
-    pub(crate) no_of_histos: i64, // TODO: Implement TMusrRunPhysicalQuantity
-                                  // time_resolution: TMusrRunPhysicalQuantity,
-                                  // TODO: Implement TIntVector
-                                  // redGreen_offsets: TIntVector,
+pub struct RunInfo {
+    pub version: String,
+    pub generic_validator_url: String,
+    pub specific_validator_url: String,
+    pub generator: String,
+    pub file_name: String,
+    pub run_title: String,
+    pub run_number: i64,
+    pub run_start_time: String,
+    pub run_stop_time: String,
+    pub laboratory: String,
+    pub instrument: String,
+    pub muon_species: String,
+    pub muon_source: String,
+    pub setup: String,
+    pub comment: String,
+    pub sample_name: String,
+    pub no_of_histos: i64,
 }
 
 #[derive(Debug)]
-pub(crate) struct DetectorInfo {
-    pub(crate) detectors: Vec<Detector>,
+pub struct DetectorInfo {
+    pub detectors: Vec<Detector>,
 }
 
 #[derive(Debug)]
-pub(crate) struct Detector {
-    pub(crate) name: String,
-    pub(crate) histo_number: i64,
-    pub(crate) histo_length: i64,
-    pub(crate) time_zero_bin: f64,
-    pub(crate) first_good_bin: i64,
-    pub(crate) last_good_bin: i64,
+pub struct Detector {
+    pub name: String,
+    pub histo_number: i64,
+    pub histo_length: i64,
+    pub time_zero_bin: f64,
+    pub first_good_bin: i64,
+    pub last_good_bin: i64,
 }
 
 #[derive(Debug)]
-pub(crate) struct SampleEnvironmentInfo {
-    cryo: String,
+pub struct SampleEnvironmentInfo {
+    pub cryo: String,
 }
 
 #[derive(Debug)]
-pub(crate) struct MagneticFieldEnvironmentInfo {
-    magnet_name: String,
+pub struct MagneticFieldEnvironmentInfo {
+    pub magnet_name: String,
 }
 
 #[derive(Debug)]
-pub(crate) struct BeamlineInfo {
-    name: String,
+pub struct BeamlineInfo {
+    pub name: String,
+}
+
+impl MusrRootFile {
+    pub fn parse(bytes: &[u8]) -> Option<MusrRootFile> {
+        let histos = Histos::parse(bytes)?;
+        let run_header = RunHeader::parse(bytes)?;
+        Some(MusrRootFile { histos, run_header })
+    }
+}
+
+impl Histos {
+    pub fn parse(bytes: &[u8]) -> Option<Histos> {
+        let decay_ana_module = DecayAnaModule::parse(bytes)?;
+        let sc_ana_module = SCAnaModule::parse(bytes)?;
+        Some(Histos {
+            decay_ana_module,
+            sc_ana_module,
+        })
+    }
+}
+
+impl HDecay {
+    pub fn parse(bytes: &[u8]) -> Option<HDecay> {
+        if bytes.len() < size_of::<HDecay>() {
+            return None;
+        }
+
+        let field1_bytes = &bytes[0..8];
+        let field2_bytes = &bytes[8..16];
+        let field3_bytes = &bytes[16..24];
+
+        let field1 = f64::from_le_bytes(field1_bytes.try_into().unwrap());
+        let field2 = f64::from_le_bytes(field2_bytes.try_into().unwrap());
+        let field3 = f64::from_le_bytes(field3_bytes.try_into().unwrap());
+
+        Some(HDecay {
+            field1,
+            field2,
+            field3,
+        })
+    }
+}
+
+impl DecayAnaModule {
+    pub fn parse(bytes: &[u8]) -> Option<DecayAnaModule> {
+        let h_decay_size = size_of::<HDecay>();
+        if bytes.len() < h_decay_size {
+            return None;
+        }
+
+        let num_h_decays = bytes.len() / h_decay_size;
+        let mut h_decays = Vec::with_capacity(num_h_decays);
+
+        for i in 0..num_h_decays {
+            let start = i * h_decay_size;
+            let end = start + h_decay_size;
+            let h_decay_bytes = &bytes[start..end];
+
+            if let Some(h_decay) = HDecay::parse(h_decay_bytes) {
+                h_decays.push(h_decay);
+            } else {
+                return None;
+            }
+        }
+
+        Some(DecayAnaModule { h_decay: h_decays })
+    }
+}
+
+impl SCAnaModule {
+    pub fn parse(bytes: &[u8]) -> Option<SCAnaModule> {
+        let struct_size = size_of::<SCAnaModule>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let temperature_bytes = &bytes[0..8];
+        let magnetic_field_bytes = &bytes[8..16];
+
+        let temperature = f64::from_le_bytes(temperature_bytes.try_into().unwrap());
+        let magnetic_field = f64::from_le_bytes(magnetic_field_bytes.try_into().unwrap());
+
+        Some(SCAnaModule {
+            h_sample_temperature: temperature,
+            h_sample_magnetic_field: magnetic_field,
+        })
+    }
+}
+
+impl RunHeader {
+    pub fn parse(bytes: &[u8]) -> Option<RunHeader> {
+        let header_size = size_of::<RunHeader>();
+        if bytes.len() < header_size {
+            return None;
+        }
+
+        let run_info_size = size_of::<RunInfo>();
+        let detector_info_size = size_of::<DetectorInfo>();
+        let sample_env_info_size = size_of::<SampleEnvironmentInfo>();
+        let mag_field_env_info_size = size_of::<MagneticFieldEnvironmentInfo>();
+        let beamline_info_size = size_of::<BeamlineInfo>();
+
+        let run_info = RunInfo::parse(&bytes[0..run_info_size])?;
+        let detector_info =
+            DetectorInfo::parse(&bytes[run_info_size..run_info_size + detector_info_size])?;
+        let sample_env_info = SampleEnvironmentInfo::parse(
+            &bytes[run_info_size + detector_info_size
+                ..run_info_size + detector_info_size + sample_env_info_size],
+        )?;
+        let mag_field_env_info = MagneticFieldEnvironmentInfo::parse(
+            &bytes[run_info_size + detector_info_size + sample_env_info_size
+                ..run_info_size
+                    + detector_info_size
+                    + sample_env_info_size
+                    + mag_field_env_info_size],
+        )?;
+        let beamline_info = BeamlineInfo::parse(
+            &bytes[run_info_size
+                + detector_info_size
+                + sample_env_info_size
+                + mag_field_env_info_size..],
+        )?;
+
+        Some(RunHeader {
+            run_info,
+            detector_info,
+            sample_environment_info: sample_env_info,
+            magnetic_field_environment_info: mag_field_env_info,
+            beamline_info,
+        })
+    }
+}
+
+impl RunInfo {
+    pub fn parse(bytes: &[u8]) -> Option<RunInfo> {
+        let struct_size = size_of::<RunInfo>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let version = String::from_utf8_lossy(&bytes[0..16])
+            .trim_end_matches('\0')
+            .to_string();
+        let generic_validator_url = String::from_utf8_lossy(&bytes[16..32])
+            .trim_end_matches('\0')
+            .to_string();
+        let specific_validator_url = String::from_utf8_lossy(&bytes[32..48])
+            .trim_end_matches('\0')
+            .to_string();
+        let generator = String::from_utf8_lossy(&bytes[48..64])
+            .trim_end_matches('\0')
+            .to_string();
+        let file_name = String::from_utf8_lossy(&bytes[64..80])
+            .trim_end_matches('\0')
+            .to_string();
+        let run_title = String::from_utf8_lossy(&bytes[80..96])
+            .trim_end_matches('\0')
+            .to_string();
+        let run_number = i64::from_le_bytes(bytes[96..104].try_into().unwrap());
+        let run_start_time = String::from_utf8_lossy(&bytes[104..120])
+            .trim_end_matches('\0')
+            .to_string();
+        let run_stop_time = String::from_utf8_lossy(&bytes[120..136])
+            .trim_end_matches('\0')
+            .to_string();
+        let laboratory = String::from_utf8_lossy(&bytes[136..152])
+            .trim_end_matches('\0')
+            .to_string();
+        let instrument = String::from_utf8_lossy(&bytes[152..168])
+            .trim_end_matches('\0')
+            .to_string();
+        let muon_species = String::from_utf8_lossy(&bytes[176..192])
+            .trim_end_matches('\0')
+            .to_string();
+        let muon_source = String::from_utf8_lossy(&bytes[192..208])
+            .trim_end_matches('\0')
+            .to_string();
+        let setup = String::from_utf8_lossy(&bytes[208..224])
+            .trim_end_matches('\0')
+            .to_string();
+        let comment = String::from_utf8_lossy(&bytes[224..240])
+            .trim_end_matches('\0')
+            .to_string();
+        let sample_name = String::from_utf8_lossy(&bytes[240..256])
+            .trim_end_matches('\0')
+            .to_string();
+        let no_of_histos = i64::from_le_bytes(bytes[256..264].try_into().unwrap());
+
+        Some(RunInfo {
+            version,
+            generic_validator_url,
+            specific_validator_url,
+            generator,
+            file_name,
+            run_title,
+            run_number,
+            run_start_time,
+            run_stop_time,
+            laboratory,
+            instrument,
+            muon_species,
+            muon_source,
+            setup,
+            comment,
+            sample_name,
+            no_of_histos,
+        })
+    }
+}
+
+impl DetectorInfo {
+    pub fn parse(bytes: &[u8]) -> Option<DetectorInfo> {
+        let struct_size = size_of::<DetectorInfo>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let detector_size = size_of::<Detector>();
+        let num_detectors = bytes.len() / detector_size;
+        let mut detectors = Vec::with_capacity(num_detectors);
+
+        for i in 0..num_detectors {
+            let start = i * detector_size;
+            let end = start + detector_size;
+            let detector_bytes = &bytes[start..end];
+            if let Some(detector) = Detector::parse(detector_bytes) {
+                detectors.push(detector);
+            } else {
+                return None;
+            }
+        }
+
+        Some(DetectorInfo { detectors })
+    }
+}
+
+impl Detector {
+    pub fn parse(bytes: &[u8]) -> Option<Detector> {
+        let struct_size = size_of::<Detector>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let name = String::from_utf8_lossy(&bytes[0..16])
+            .trim_end_matches('\0')
+            .to_string();
+        let histo_number = i64::from_le_bytes(bytes[16..24].try_into().unwrap());
+        let histo_length = i64::from_le_bytes(bytes[24..32].try_into().unwrap());
+        let time_zero_bin = f64::from_le_bytes(bytes[32..40].try_into().unwrap());
+        let first_good_bin = i64::from_le_bytes(bytes[40..48].try_into().unwrap());
+        let last_good_bin = i64::from_le_bytes(bytes[48..56].try_into().unwrap());
+
+        Some(Detector {
+            name,
+            histo_number,
+            histo_length,
+            time_zero_bin,
+            first_good_bin,
+            last_good_bin,
+        })
+    }
+}
+
+impl SampleEnvironmentInfo {
+    pub fn parse(bytes: &[u8]) -> Option<SampleEnvironmentInfo> {
+        let struct_size = size_of::<SampleEnvironmentInfo>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let cryo = String::from_utf8_lossy(&bytes[0..16])
+            .trim_end_matches('\0')
+            .to_string();
+
+        Some(SampleEnvironmentInfo { cryo })
+    }
+}
+
+impl MagneticFieldEnvironmentInfo {
+    pub fn parse(bytes: &[u8]) -> Option<MagneticFieldEnvironmentInfo> {
+        let struct_size = size_of::<MagneticFieldEnvironmentInfo>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let magnet_name = String::from_utf8_lossy(&bytes[0..16])
+            .trim_end_matches('\0')
+            .to_string();
+
+        Some(MagneticFieldEnvironmentInfo { magnet_name })
+    }
+}
+
+impl BeamlineInfo {
+    pub fn parse(bytes: &[u8]) -> Option<BeamlineInfo> {
+        let struct_size = size_of::<BeamlineInfo>();
+        if bytes.len() < struct_size {
+            return None;
+        }
+
+        let name = String::from_utf8_lossy(&bytes[0..16])
+            .trim_end_matches('\0')
+            .to_string();
+
+        Some(BeamlineInfo { name })
+    }
 }
