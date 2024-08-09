@@ -19,6 +19,11 @@ pub struct DecayAnaModule {
 
 #[derive(Debug)]
 pub struct HDecay {
+    // Here it is assumed that there are hypothetical red / green data with electric field on/off
+    //  and light on/off, and hence 4 data sets per detector, and 8 detectors of the instrument:
+    //      left/forward, top/forward, right/forward, bottom/forward, left/backward, top/backward, right/backward, bottom/backward.
+    //
+    // E.g.,  hDecay001 # left/forward, electric field off, light off
     pub field1: f64,
     pub field2: f64,
     pub field3: f64,
@@ -39,6 +44,16 @@ pub struct RunHeader {
     pub beamline_info: BeamlineInfo,
 }
 
+// TMusrRunPhysicalQuantity is a data type (represents Physical quantities) that can be described as: <property name>: <value> +- <estimated error> <unit>; SP: <demand>; <description>. It can also contain various representations.
+// Check link for documentation: https://lmu.web.psi.ch/musrfit/user/html/musr-root.html#musr-run-physical-quantity
+//
+// TIntVector is a collection of integers.
+//
+// TStringVector is a Collection of strings.
+//
+// TDoubleVector is a collection of floating point numbers.
+//
+// Check link for documentation ("TMusrRunHeader Concept" section): https://lmu.web.psi.ch/musrfit/user/html/musr-root.html
 #[derive(Debug)]
 pub struct RunInfo {
     pub version: String,
@@ -50,14 +65,20 @@ pub struct RunInfo {
     pub run_number: i64,
     pub run_start_time: String,
     pub run_stop_time: String,
+    // TODO: Missing `Run Duration` attribute of type TMusrRunPhysicalQuantity. e.g., "run duration in sec"
     pub laboratory: String,
     pub instrument: String,
+    // TODO: Missing `Muon Beam Momentum` attribute of type TMusrRunPhysicalQuantity e.g. "28.1 MeV/c"
     pub muon_species: String,
     pub muon_source: String,
     pub setup: String,
     pub comment: String,
     pub sample_name: String,
+    // TODO: Missing `Sample Temperature` attribute of type TMusrRunPhysicalQuantity e.g. 3.21 +- 0.05 K; SP: 3.2; CF1
+    // TODO: Missing `Sample Magnetic Field` attribute of type TMusrRunPhysicalQuantity e.g. 350.002 +- 0.005 G; SP: 350; WEW
     pub no_of_histos: i64,
+    // TODO: Missing `Time Resolution` attribute of type TMusrRunPhysicalQuantity e.g. 0.1953125 ns
+    // TODO: Missing `RedGreen Offsets` attribute of type TIntVector e.g. 0; 20
 }
 
 #[derive(Debug)]
