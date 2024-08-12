@@ -56,21 +56,21 @@ pub struct RunHeader {
 // Check link for documentation ("TMusrRunHeader Concept" section): https://lmu.web.psi.ch/musrfit/user/html/musr-root.html
 #[derive(Debug)]
 pub struct RunInfo {
-    pub version: String,
-    pub generic_validator_url: String,
-    pub specific_validator_url: String,
-    pub generator: String,
-    pub file_name: String,
+    pub version: String,                // Git version of `TMusrRunHeader`
+    pub generic_validator_url: String,  // URL
+    pub specific_validator_url: String, // URL
+    pub generator: String,              // program which wrote the MusrRoot file e.g., nemu_analyzer
+    pub file_name: String, // file name of the MusrRoot file e.g., deltat_tdc_gps_4295.root
     pub run_title: String,
     pub run_number: i64,
-    pub run_start_time: String,
-    pub run_stop_time: String,
+    pub run_start_time: String, // ISO 8601 date time
+    pub run_stop_time: String,  // ISO 8601 date time
     // TODO: Missing `Run Duration` attribute of type TMusrRunPhysicalQuantity. e.g., "run duration in sec"
-    pub laboratory: String,
-    pub instrument: String,
+    pub laboratory: String, // e.g., PSI
+    pub instrument: String, // e.g., GPS
     // TODO: Missing `Muon Beam Momentum` attribute of type TMusrRunPhysicalQuantity e.g. "28.1 MeV/c"
-    pub muon_species: String,
-    pub muon_source: String,
+    pub muon_species: String, //  positive or negative muon
+    pub muon_source: String,  // e.g. “Target E - Low Energy Muons” or “Target M” …
     pub setup: String,
     pub comment: String,
     pub sample_name: String,
@@ -88,27 +88,27 @@ pub struct DetectorInfo {
 
 #[derive(Debug)]
 pub struct Detector {
-    pub name: String,
-    pub histo_number: i64,
-    pub histo_length: i64,
-    pub time_zero_bin: f64,
+    pub name: String,       // detector name, e.g. Left-NPP
+    pub histo_number: i64, // histogram number. This number corresponds to the histogram number in the histos/DecayAnaModule sub-tree.
+    pub histo_length: i64, // length of the histogram (in bins)
+    pub time_zero_bin: f64, // The type is Double_t since for the high-field spectrometer at PSI an Int_t representation would be not good enough.
     pub first_good_bin: i64,
     pub last_good_bin: i64,
 }
 
 #[derive(Debug)]
 pub struct SampleEnvironmentInfo {
-    pub cryo: String,
+    pub cryo: String, // name of the used cryostat/oven, e.g. Konti-2
 }
 
 #[derive(Debug)]
 pub struct MagneticFieldEnvironmentInfo {
-    pub magnet_name: String,
+    pub magnet_name: String, // name of the used magnet, e.g. WEW. In case of ZF measurements, there might be an entry like ZF.
 }
 
 #[derive(Debug)]
 pub struct BeamlineInfo {
-    pub name: String,
+    pub name: String, // name of the beamline, e.g. piM3.2
 }
 
 impl MusrRootFile {
