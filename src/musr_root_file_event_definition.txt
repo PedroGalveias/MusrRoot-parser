@@ -1,0 +1,231 @@
+Tue Jul 23 12:13:13 2024 Run 2000 started.
+Tue Jul 23 12:25:32 2024 Run 2000 stopped.
+
+ CS350, T=290.00 K, E=13.99 keV, B=~68(G)/11.76(A), Tr/Sa=12.00/-2.80 kV, SR=-90.00, RA-RT pulsing
+ ===================================================================================================
+
+#BUC---- B e g i n of User Comment ------ Do not edit this line
+
+
+#EUC----   E n d   of User Comment ------ Do not edit this line
+
+
+
+
+ ======================   E v e n t  definition   =========================
+
+ Events:
+ Event_0: (BC)-MCP1-(e+); Event_1:( BC)-TD-MCP2-(e+); Event_2: LEmuSR, (BC)-TD-e
+
+ t0 Offset: 550
+ Event   0: 0	     BC:       0	     e+:       1
+ Event   1: 0	     BC:       0	     e+:       0
+ Event   2: 1	     BC:       0	     e+:       1
+
+ Time windows:
+ =============
+ Event   0: Data Window:   51200, TOF BC Window:    3000, TOF BC Pileup:    3000
+ Event   1: Data Window:   66560, TOF M2 Window:   66560, TOF M2 Pileup:   66560
+ Event   1: Data Window:   66560, TOF BC Window:    3000, TOF BC Pileup:    3000
+ Event   2: Data Window:   66560, TOF BC Window:    3000, TOF BC Pileup:    3000
+
+ Software delays:
+ ================
+ Event   0: MCP1  :     500, e+:    2000
+ Event   1: Master:       0, e+:    2000
+ Event   2: TD    :       0, e+:    2000
+
+ Event   1: Master TD: 1, TD Active: 1, Master M2: 0, M2 Active 0
+
+ TD-MCP2 TOF cuts:
+ =================
+ TOFcutMin  :    1600, TOFcutMax:    2100
+
+ MCP2 beamspot parameter:
+ ========================
+ x Offset (mm)  :   -1.00, y Offset (mm):    0.35
+ scale factor   :    0.15, rotation angle (degree):    0.00
+
+Transport-HV:
+===============
+       RightRods =   -3.049   kV	        LeftRods =    3.044   kV
+       LeftPlate =    6.080   kV	      RightPlate =   -6.080   kV
+       Moderator =   11.999   kV	       Mod_Guard =    9.593   kV
+        Mod_Grid =    8.316   kV	         Lense_1 =    7.195   kV
+          Mirror =   12.004   kV	         Lense_2 =    8.395   kV
+         Lense_3 =    9.390   kV	            RA-L =    9.394   kV
+            RA-R =    9.402   kV	            RA-T =    9.392   kV
+            RA-B =    9.402   kV	          Sample =   -2.801   kV
+  Mean Moderator =   11.999(0.000) kV	     Mean Sample =   -2.801(0.000) kV
+      SR Current =   -8.504 A		      SR Voltage =   -7.180 V
+      SR Angle   =  -90.000 degree
+
+Muon Energy:
+===============
+     energy loss =    0.806   keV    implantation energy =   13.994   keV
+
+Calculated t0's:
+===============
+     t0[ 0]      =     2834
+     t0[ 1]      =     2834
+     t0[ 2]      =     2834
+     t0[ 3]      =     2834
+     t0[ 4]      =     2834
+     t0[ 5]      =     2834
+     t0[ 6]      =     2834
+     t0[ 7]      =     2834
+
+Beamline:
+=========
+ Beamline settings: /mnt/home/nemu/nemu/beam/new_mue4/mue4_settings/muE4_null.set
+
+ WSX61A	 DAC =   304  ADC = 303.536	 WSX61B	 DAC =   303  ADC = 303.187
+ WSX62	 DAC =   126  ADC = 125.967	 ASR61	 DAC =   309  ADC = 309.094
+ QSM601	 DAC =    43  ADC =  42.994	 QSM602	 DAC =  -132  ADC = -132.488
+ QSM603	 DAC =    73  ADC =  73.501	 ASR62	 DAC =   276  ADC = 275.492
+ QSM604	 DAC =    45  ADC =  45.000	 QSM605	 DAC =  -134  ADC = -134.098
+ QSM606	 DAC =    80  ADC =  79.593	 ASR63	 DAC =   268  ADC = 268.017
+ QSM607	 DAC =    67  ADC =  67.198	 QSM608	 DAC =  -133  ADC = -132.987
+ QSM609	 DAC =    72  ADC =  72.011	 QSM610	 DAC =   -84  ADC = -83.967
+ QSM611	 DAC =   186  ADC = 186.488	 QSM612	 DAC =  -195  ADC = -195.010
+ FS61-L	 DAC =   223  ADC = 223.100	 FS61-R	 DAC =   215  ADC = 215.200
+ FS61-V	 DAC =   400  ADC =   0.000	 FS62-L	 DAC =   195  ADC = 192.700
+ FS62-R	 DAC =   195  ADC = 192.000	 FS63-L	 DAC =   195  ADC = 195.200
+ FS63-R	 DAC =   195  ADC = 195.000	 FS63-V	 DAC =   376  ADC = 376.000
+ KV61 (	 DAC =     0  ADC =   1.000	 KV61 P	 DAC =  -nan  ADC =   1.000
+ KV62 (	 DAC =     0  ADC =   1.000	 KV62 P	 DAC =  -nan  ADC =   1.000
+ SEP61 	 DAC =    71  ADC =  70.998	 Sep61 	 DAC =     1  ADC =   1.000
+ Sep61 	 DAC =     1  ADC =   1.000	 Sep61 	 DAC =   150  ADC = 151.000
+ Sep61 	 DAC =   150  ADC = 151.000	 Sep61 	 DAC =    50  ADC =   0.500
+ Sep61 	 DAC =    50  ADC =   1.010	 Sep61 	 DAC =  -nan  ADC = 3804576256.000
+ Sep61 	 DAC =  -nan  ADC =   0.000	 Sep61 	 DAC =  -nan  ADC = 300.605
+ Sep61 	 DAC =  -nan  ADC =   0.000	 Sep61 	 DAC =  -nan  ADC = 300.605
+
+Environment:
+============
+	 LEM Setup		 = Sample, WEW
+	 Sample Name		 = CS350
+	 Sample Cryo		 = Konti-2
+	 Zero Flux		 =    -0.0019 V
+	 B Field		 =      68.00 G
+	 Mean B field		 =      68.00( 0.00) G
+
+	 MC_GJ 			 = 3.85e-10 mbar
+	 MC_GJ2			 = 1.07e-09 mbar
+	 TC_GJ 			 = 3.00e-09 mbar
+	 SC_GJ 			 = 2.34e-08 mbar
+	 SC_GJ2			 = 1.43e-01 mbar
+
+	 XTC_Th			 =    -1.00 AA
+	 moderator		 =   303Ar+13N2 + 200Ar/12N2
+	 Date of Evaporation	 =   20.07.24, 14:30
+
+	 Mirror horizontal	 = 294.75 degree
+	 Mirror vertical	 =  18.50 mm
+	 Trigger horizontal	 = 230.00 degree
+	 Trigger vertical	 =  15.00 mm
+
+Temperatures:
+============
+	 Sample_CF1     	 =   290.01   K
+	 Sample_CF2     	 =   289.89   K
+	 Mean Sample		 =   290.00( 0.01) K
+	 Oven_Omega_T1		 =    31.61   K
+
+Control Room Scalers:
+====================
+	 Nominal Value = 150000
+	 AHPOS Date    = 150k/mAs war die Rate am 23.6.2024, vor dem Service
+	 Target        = (4cm slanted target E)
+
+
+--------------------------------------------------------------------------
+ Run Number:       2000               started at: Tue Jul 23 12:13:13 2024
+ Run State :    Stopped              last update: Tue Jul 23 12:25:32 2024
+
+ #  Label                  Total              Rate/mAs           Rate/s
+--------------------------------------------------------------------------
+
+ 0  Ip               1.40982e+08	      100000.0         191082.7
+ 1  clock                7378069	        5233.3          10000.0
+ 2  MCP1             9.69304e+07	       68753.7         131376.4
+ 3  BC_OR                      0	           0.0              0.0
+ 4  TD                   4775486	        3387.3           6472.5
+ 5  BGO1                       0	           0.0              0.0
+ 6  BGO2                       0	           0.0              0.0
+ 7  BGO3                       0	           0.0              0.0
+ 8  BGO4                       0	           0.0              0.0
+ 9  BGO5                       0	           0.0              0.0
+10  BGO6                       0	           0.0              0.0
+11  MCPLya1                    0	           0.0              0.0
+12  MCPLya2                    0	           0.0              0.0
+13  PosMCP1I         2.95959e+08	      209926.7         401133.6
+14  PosMCP1O         3.13642e+08	      222469.6         425100.9
+15                             0	           0.0              0.0
+16  PosLDI                414144	         293.8            561.3
+17  PosLDO                367289	         260.5            497.8
+18  PosLUI                311658	         221.1            422.4
+19  PosLUO                682254	         483.9            924.7
+20  PosBDI               9952238	        7059.2          13488.9
+21  PosBDO                484287	         343.5            656.4
+22  PosBUI                362646	         257.2            491.5
+23  PosBUO                382928	         271.6            519.0
+24  PosRDI                333163	         236.3            451.6
+25  PosRDO                259181	         183.8            351.3
+26  PosRUI                466390	         330.8            632.1
+27  PosRUO                455725	         323.3            617.7
+28  PosTDI                404664	         287.0            548.5
+29  PosTDO               3014145	        2138.0           4085.3
+30  PosTUI                477432	         338.6            647.1
+31  PosTUO                319534	         226.6            433.1
+32  ExtOn1                 73629	          52.2             99.8
+33  ExtOff1                73629	          52.2             99.8
+34  MCP2F                      0	           0.0              0.0
+35  MCP2R                      0	           0.0              0.0
+36  MCP2X1                     0	           0.0              0.0
+37  MCP2X2                     0	           0.0              0.0
+38  MCP2Y1                     0	           0.0              0.0
+39  MCP2Y2                     0	           0.0              0.0
+40  PosLD                  98661	          70.0            133.7
+41  PosLU                 232874	         165.2            315.6
+42  PosBD                  94929	          67.3            128.7
+43  PosBU                 241076	         171.0            326.7
+44  PosRD                 133948	          95.0            181.5
+45  PosRU                 250114	         177.4            339.0
+46  PosTD                 119947	          85.1            162.6
+47  PosTU                 237188	         168.2            321.5
+48  PosL                  330384	         234.3            447.8
+49  PosB                  334932	         237.6            454.0
+50  PosR                  382815	         271.5            518.9
+51  PosT                  355863	         252.4            482.3
+52  PosM1            1.94664e+08	      138077.1         263841.5
+53  TDNIM                4774886	        3386.9           6471.7
+54  PosD                  444515	         315.3            602.5
+55  PosU                  957524	         679.2           1297.8
+56  ch56                       0	           0.0              0.0
+57  ch57                       0	           0.0              0.0
+58  ch58                       0	           0.0              0.0
+59  ch59                       0	           0.0              0.0
+60  ch60                       0	           0.0              0.0
+61  ch61                       0	           0.0              0.0
+62  ch62                       0	           0.0              0.0
+63  ch63                       0	           0.0              0.0
+    BC-Sum:                    0	           0.0              0.0
+--- vme stats ----------
+ SlowMuonEvents :        1009806	         716.3           1368.7
+ FastMuonEvents :              0	           0.0              0.0
+ ReadMidasEvents:        1009806	         716.3           1368.7
+ TD-clean       :        3990261	        2830.3           5408.3
+ TD-good        :        3421027	        2426.6           4636.8
+ MCP1-clean     :              0	           0.0              0.0
+ MCP1-good      :              0	           0.0              0.0
+ MCP2-clean     :              0	           0.0              0.0
+ MCP2-good      :              0	           0.0              0.0
+ BC-Sum         :              0	           0.0              0.0
+ BC-clean       :              0	           0.0              0.0
+ TDC LifeTime:             99.98(%)   TDC Error counts:               0
+ TDC Clock:             7376888
+--------------------------------------------------------------------------
+Elapsed time: 0h12m19s
+
+Rates are   a v e r a g e d   rates
