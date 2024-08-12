@@ -4,7 +4,6 @@ mod musr_root_file_parser;
 
 use crate::error::ParsingError;
 use crate::musr_root_file_parser::parse_musr_root_file;
-use std::fs::File;
 
 fn main() -> Result<(), ParsingError> {
     // Get the file path from command line arguments
@@ -14,10 +13,10 @@ fn main() -> Result<(), ParsingError> {
     //     std::process::exit(1);
     // }
     // let file_path = &args[1];
-    let mut file = File::open("./src/lem23_his_0001.root")?;
+    // let mut file = File::open("./src/lem24_his_2000.root")?;
 
     // Parse the file
-    let musr_root_file = parse_musr_root_file("./src/lem23_his_0001.root")?;
+    let musr_root_file = parse_musr_root_file("./src/lem24_his_2000.root")?;
 
     // Do something with the parsed data
     println!("{:?}", musr_root_file);
