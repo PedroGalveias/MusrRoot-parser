@@ -24,6 +24,18 @@ pub struct HDecay {
     //      left/forward, top/forward, right/forward, bottom/forward, left/backward, top/backward, right/backward, bottom/backward.
     //
     // E.g.,  hDecay001 # left/forward, electric field off, light off
+    //
+    // Aditional comments: as can be seen the histograms are continuous numbered until there is a red / green mode switch where the histogram number “jumps” (e.g. from 008 to 011).
+    // In order to fill in the different red / green histograms an offset is added (here 10, 20, and 30).
+    //
+    // Example:
+    //
+    // hDecay007 # right/backward, electric field off, light off
+    // hDecay008 # bottom/backward, electric field off, light off
+    // hDecay011 # left/forward, electric field on, light off
+    // hDecay012 # top/forward, electric field on, light off
+    //
+    // Check PSI doc link in the README file for more information.
     pub field1: f64,
     pub field2: f64,
     pub field3: f64,
@@ -35,6 +47,18 @@ pub struct SCAnaModule {
     pub h_sample_magnetic_field: f64,
 }
 
+// In the RunHeader (except for the last part of it, the RunSummary, all fields follow this rule: <number> - <label>: <value> -@<type>.
+// Example:
+//  000 - Version: $Id: TMusrRunHeader.cpp 5092 2012-03-13 07:47:00Z nemu $ -@0
+//  001 - Generic Validator URL: http://lmu.web.psi.ch/facilities/software/MusrRoot/Validation/MusrRoot.xsd -@0
+//  009 - Run Duration: 17305 sec -@3
+//
+// RunSummary examples:
+// 0000 - Wed Oct  5 01:30:37 2011 Run 2856 started.
+// 0001 - Wed Oct  5 02:02:51 2011 Run 2856 stopped.
+// 0002 -
+// 0003 - LCO, T=170.02(K), wTF ~30(G)/5.18(A), Tr/Sa=15.02/8.50(kV), E=5.63(keV), LEDb off, BP off
+// 0004 - =========================================================================================
 #[derive(Debug)]
 pub struct RunHeader {
     pub run_info: RunInfo,
@@ -138,7 +162,7 @@ impl HDecay {
 
         let field1_bytes = &bytes[0..8];
         let field2_bytes = &bytes[8..16];
-        let field3_bytes = &bytes[16..24];
+        let field3_bytes: &[u8] = &bytes[16..24];
 
         let field1 = f64::from_le_bytes(field1_bytes.try_into().unwrap());
         let field2 = f64::from_le_bytes(field2_bytes.try_into().unwrap());
@@ -209,7 +233,7 @@ impl RunHeader {
         let detector_info_size = size_of::<DetectorInfo>();
         let sample_env_info_size = size_of::<SampleEnvironmentInfo>();
         let mag_field_env_info_size = size_of::<MagneticFieldEnvironmentInfo>();
-        let beamline_info_size = size_of::<BeamlineInfo>();
+        let beamline_info_size = size_of::<BeamlineInfo>(); // TODO: review! var is not being used
 
         let run_info = RunInfo::parse(&bytes[0..run_info_size])?;
         let detector_info =
