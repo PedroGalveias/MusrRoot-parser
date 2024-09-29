@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
+  <xs:annotation>
+    <xs:documentation>
+       This XSD document describes the muSR file structure for CERN/ROOT based files.
+       In the following it will be called MusrRoot.
+       It is currently the default standard for writting muSR data files at the 
+       Paul Scherrer Institute.
+          
+       Author: Andreas Suter, andreas.suter@psi.ch          
+    </xs:documentation>
+  </xs:annotation>
+    
+  <xs:element name="MusrRoot" type="musrRoot"/>
+  
+  <xs:complexType name="musrRoot">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element ref="histos"/>
+        <xs:element name="RunHeader" type="runHeaderFolder"/>
+      </xs:choice>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->
+    </xs:sequence>  
+  </xs:complexType>
+    
+  <xs:element name="histos">
+    <xs:annotation>
+       <xs:documentation>
+         The histos folder is containing potentially various subfolders. 
+         At least two subfolders, called DecayAnaModule, and SlowControlAnaModule,
+         which holds the muSR decay histograms, must be present.
+      </xs:documentation>
+    </xs:annotation>
+      
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DecayAnaModule" type="decayHistoData"/>
+        <xs:element name="SCAnaModule" type="slowControlHistoData"/>
+        <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+       
+  <xs:complexType name="decayHistoData">
+     <xs:sequence>
+       <xs:element name="DecayHistoEntry" type="decayHistoEntry" minOccurs="1" maxOccurs="unbounded"/>
+     </xs:sequence> 
+  </xs:complexType>
+    
+  <xs:complexType name="decayHistoEntry">
+     <xs:sequence>
+       <xs:element name="HistoName" type="histoName"/>
+       <xs:element name="HistoType" type="histoType"/>  
+     </xs:sequence>      
+  </xs:complexType>
+    
+  <xs:simpleType name="histoName">
+      <xs:restriction base="xs:string">
+        <xs:pattern value="hDecay([0-9]){3,}"/> <!-- this means hDecayXXX, where XXX are 3 digits -->
+      </xs:restriction>
+  </xs:simpleType>  
+    
+  <xs:simpleType name="histoType">
+      <xs:restriction base="xs:string">
+        <xs:pattern value="TH1F"></xs:pattern>
+      </xs:restriction>
+  </xs:simpleType>  
+  
+  <xs:complexType name="slowControlHistoData">
+    <xs:sequence>
+      <xs:element name="SlowControlHistoEntry" type="slowControlHistoEntry" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="slowControlHistoEntry">
+      <xs:sequence>
+        <xs:element name="SlowControlName" type="xs:string"/>
+        <xs:element name="SlowControlType" type="slowControlType"/>
+      </xs:sequence>
+  </xs:complexType>
+       
+  <xs:simpleType name="slowControlType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="TH1F"/>  
+    </xs:restriction>  
+  </xs:simpleType>  
+
+  <xs:complexType name="runHeaderFolder">
+    <xs:sequence>
+      <xs:element name="RunInfo" type="runInfo"/>
+      <xs:element name="DetectorInfo" type="detectorInfo"/>
+      <xs:element name="SampleEnvironmentInfo" type="sampleEnvironmentInfo"/>
+      <xs:element name="MagneticFieldEnvironmentInfo" type="magneticFieldEnvironmentInfo"/>
+      <xs:element name="BeamlineInfo" type="beamlineInfo"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="runInfo">
+    <xs:sequence>
+      <xs:element name="Version" type="TString"/>
+      <xs:element name="Generic_Validator_URL" type="TString"/>
+      <xs:element name="Specific_Validator_URL" type="TString"/>
+      <xs:element name="Generator" type="TString"/>
+      <xs:element name="Proposal_Number" type="Int_t" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Main_Proposer" type="TString" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="File_Name" type="TString"/>
+      <xs:element name="Run_Title" type="TString"/>
+      <xs:element name="Run_Number" type="Int_t"/>
+      <xs:element name="Run_Start_Time" type="TString"/>
+      <xs:element name="Run_Stop_Time" type="TString"/>
+      <xs:element name="Run_Duration" type="TMusrRunPhysicalQuantity"/>
+      <xs:element name="Laboratory" type="TString"/>
+      <xs:element name="Instrument" type="TString"/>
+      <xs:element name="Muon_Beam_Momentum" type="TMusrRunPhysicalQuantity"/>
+      <xs:element name="Muon_Species" type="TString"/>
+      <xs:element name="Muon_Source" type="TString"/>
+      <xs:element name="Setup" type="TString"/>
+      <xs:element name="Comment" type="TString"/>
+      <xs:element name="Sample_Name" type="TString"/>
+      <xs:element name="Sample_Temperature" type="TMusrRunPhysicalQuantity"/>
+      <xs:element name="Sample_Magnetic_Field" type="TMusrRunPhysicalQuantity"/>
+      <xs:element name="No_of_Histos" type="Int_t"/>
+      <xs:element name="Time_Resolution" type="TMusrRunPhysicalQuantity"/>
+      <xs:element name="RedGreen_Offsets" type="TIntVector"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->
+    </xs:sequence>
+  </xs:complexType>
+ 
+  <xs:simpleType name="Int_t">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="Int_t"/>
+    </xs:restriction>
+  </xs:simpleType>
+ 
+  <xs:simpleType name="Double_t">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="Double_t"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="TString">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="TString"/>
+    </xs:restriction>
+  </xs:simpleType> 
+   
+  <xs:simpleType name="TMusrRunPhysicalQuantity">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="TMusrRunPhysicalQuantity"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="TIntVector">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="TIntVector"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="sampleEnvironmentInfo">
+    <xs:sequence>
+      <xs:element name="Cryo" type="TString"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->          
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="magneticFieldEnvironmentInfo">
+    <xs:sequence>
+      <xs:element name="Magnet_Name" type="TString"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->          
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="detectorInfo">
+    <xs:sequence>
+      <xs:element name="Detector" type="detector" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="detector">
+    <xs:sequence>
+      <xs:element name="Name" type="TString"/>
+      <xs:element name="Histo_Number" type="Int_t"/>
+      <xs:element name="Histo_Length" type="Int_t"/>
+      <xs:element name="Time_Zero_Bin" type="Double_t"/>
+      <xs:element name="First_Good_Bin" type="Int_t"/>
+      <xs:element name="Last_Good_Bin" type="Int_t"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->      
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="beamlineInfo">
+    <xs:sequence>
+    	<xs:element name="Name" type="TString"/>
+      <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> <!-- here can go any additional stuff you like -->          
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
